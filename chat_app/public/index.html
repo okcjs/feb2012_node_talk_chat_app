@@ -9,14 +9,23 @@ var socket = io.connect("http://localhost:1337");
 
 $(document).on("ready",function(){
 	//node handlers
-	socket.on("nameset",function(name){
-		alert(name);
+	socket.on("announcement",function(message){
+		$("#messages").append(
+			"<div class='announcement'>" + message + "</div>");
 	});
 
 	//html handlers
 	$("#set-name-button").on("click",function(){
 		var name = $("#username").val();
-		socket.emit("setname",name);
+
+		//this is called by the server.
+		var nameCallback = function(isUsed){
+			if(isUsed){
+				alert("name is in use");
+			} else {
+			}
+		};
+		socket.emit("setname",name,nameCallback);
 	});
 });
 </script>
@@ -24,5 +33,7 @@ $(document).on("ready",function(){
 <body>
 <input id="username" type="text" />
 <input id="set-name-button" type="button" value="set name" />
+
+<div id="messages"></div>
 </body>
 </html>
