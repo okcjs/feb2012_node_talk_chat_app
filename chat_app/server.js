@@ -12,5 +12,8 @@ var ioServer = io.listen(1337,function(){
 
 ioServer.sockets.on("connection", function(socket){
 	console.log("someone connected");
-	socket.emit("connection","hello someone");
+
+	socket.on("setname",function(name){
+		socket.emit("nameset",name);
+	});
 });

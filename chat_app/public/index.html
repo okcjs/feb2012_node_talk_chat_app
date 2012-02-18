@@ -1,15 +1,28 @@
 <html>
-<body>
-Hello OKCjs.
-
+<head>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery
+/1.7.1/jquery.min.js"></script>
 <script type="text/javascript" src="http://localhost:1337/socket.io/socket.io.js"></script>
 
 <script type="text/javascript">
 var socket = io.connect("http://localhost:1337");
-socket.on("connection",function(message){
-	alert(message);
+
+$(document).on("ready",function(){
+	//node handlers
+	socket.on("nameset",function(name){
+		alert(name);
+	});
+
+	//html handlers
+	$("#set-name-button").on("click",function(){
+		var name = $("#username").val();
+		socket.emit("setname",name);
+	});
 });
 </script>
-
+</head>
+<body>
+<input id="username" type="text" />
+<input id="set-name-button" type="button" value="set name" />
 </body>
 </html>
