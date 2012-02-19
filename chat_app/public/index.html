@@ -8,10 +8,19 @@
 var socket = io.connect("http://localhost:1337");
 
 $(document).on("ready",function(){
+	//page setup
+	$("#chat").hide(); //hide this till the username is set.
+
+
 	//node handlers
 	socket.on("announcement",function(message){
 		$("#messages").append(
 			"<div class='announcement'>" + message + "</div>");
+	});
+
+	socket.on("message",function(message){
+		$("#messages").append(
+			"<div class='message'>" + message + "</div>");
 	});
 
 	//html handlers
@@ -23,17 +32,31 @@ $(document).on("ready",function(){
 			if(isUsed){
 				alert("name is in use");
 			} else {
+				$("#name-inputs").hide();
+				$("#chat").show();
 			}
 		};
 		socket.emit("setname",name,nameCallback);
+	});
+
+	$("#chat").on("submit",function(){
+		socket.emit("message",$("#message").val());
+		$("#message").val("");
+		return false;
 	});
 });
 </script>
 </head>
 <body>
-<input id="username" type="text" />
-<input id="set-name-button" type="button" value="set name" />
+<div id="name-inputs">
+	<input id="username" type="text" />
+	<input id="set-name-button" type="button" value="set name" />
+</div>
 
-<div id="messages"></div>
+<form id="chat">
+	<div id="messages"></div>
+	<input id="message" type="text" />
+	<input id="send-message-button" type="submit" value="send" />
+</form>
 </body>
 </html>
