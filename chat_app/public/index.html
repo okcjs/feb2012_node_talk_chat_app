@@ -18,6 +18,15 @@ $(document).on("ready",function(){
 			"<div class='announcement'>" + message + "</div>");
 	});
 
+	socket.on("users",function(users){
+		console.log(users);
+		var $users = $("#users");
+		$users.html("");
+		for(var name in users){
+			$users.append("<li>" + users[name] + "</li>");
+		}
+	});
+
 	socket.on("message",function(message){
 		$("#messages").append(
 			"<div class='message'>" + message + "</div>");
@@ -53,6 +62,7 @@ $(document).on("ready",function(){
 	<input id="set-name-button" type="button" value="set name" />
 </div>
 
+<ul id="users"></ul>
 <form id="chat">
 	<div id="messages"></div>
 	<input id="message" type="text" />

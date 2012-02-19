@@ -14,7 +14,6 @@ var users = {};
 
 
 io.sockets.on("connection", function(socket){
-	console.log("someone connected");
 
 	socket.on("setname",function(name,fn){
 		if(users[name]){
@@ -24,12 +23,26 @@ io.sockets.on("connection", function(socket){
 			fn(false)
 			users[name] = socket.name = name;
 			socket.broadcast.emit("announcement", name + " connected.");
+			io.sockets.emit("users",users);
 		}
 
 		socket.emit("nameset",name);
 	});
 
+	socket.on("getUsers",function(){
+		socket.emit("users",users);
+	});
+	
 	socket.on("message",function(message){
 		io.sockets.emit("message", socket.name + ": " + message);
+	});
+
+	socket.on("disconnect",function(){
+		if(socket.name && users[socket.name])
+		{
+			delete users[socket.name];
+		}
+		socket.broadcast.emit("announcement", socket.name + " disconnected.");	
+		io.sockets.emit("users",users);
 	});
 });
