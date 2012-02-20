@@ -27,7 +27,8 @@ $(document).on("ready",function(){
 	
 	socket.on("message",function(message){
 		$("#messages").append("<div class='message'>" + message + "</div>");
-		$('.message').emoticonize();
+		$(".message").emoticonize();
+		$("#messages").animate({ scrollTop: $("#messages").prop("scrollHeight") }, 300);
 	});
 
 	socket.on("users",function(users){		
