@@ -1,51 +1,58 @@
 <html>
 <head>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery
-/1.7.1/jquery.min.js"></script>
-<script type="text/javascript" src="http://localhost:1337/socket.io/socket.io.js"></script>
+<link rel="stylesheet" href="css/grid.css"></link>
+<link rel="stylesheet" href="css/styles.css"></link>
+<link rel="stylesheet" href="css/jquery-ui.css"></link>
+<link rel="stylesheet" href="css/jquery.cssemoticons.css"></link>
 
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+<script type="text/javascript" src="js/jquery.cssemoticons.min.js"></script>
+
+<script type="text/javascript" src="http://localhost:1337/socket.io/socket.io.js"></script>
 <script type="text/javascript">
 var socket = io.connect("http://localhost:1337");
 
 $(document).on("ready",function(){
 	//page setup
 	$("#chat").hide(); //hide this till the username is set.
-
+	$("#users").hide();
+	$("#name-inputs").dialog({title: "set user name"});
+	
 
 	//node handlers
 	socket.on("announcement",function(message){
-		$("#messages").append(
-			"<div class='announcement'>" + message + "</div>");
+		$("#messages").append("<div class='message announcement'>" + message + "</div>");
+	});
+	
+	socket.on("message",function(message){
+		$("#messages").append("<div class='message'>" + message + "</div>");
+		$('.message').emoticonize();
 	});
 
-	socket.on("users",function(users){
-		console.log(users);
+	socket.on("users",function(users){		
 		var $users = $("#users");
 		$users.html("");
 		for(var name in users){
-			$users.append("<li>" + users[name] + "</li>");
+			$users.append("<li class='ui-state-default ui-corner-all'>" + users[name] + "</li>");
 		}
 	});
 
-	socket.on("message",function(message){
-		$("#messages").append(
-			"<div class='message'>" + message + "</div>");
-	});
-
 	//html handlers
-	$("#set-name-button").on("click",function(){
-		var name = $("#username").val();
-
+	$("#name-inputs").on("submit",function(){
 		//this is called by the server.
 		var nameCallback = function(isUsed){
 			if(isUsed){
 				alert("name is in use");
 			} else {
-				$("#name-inputs").hide();
-				$("#chat").show();
+				$("#name-inputs").dialog("close");
+				$("#chat").show();				
+				$("#users").show();
+				$("#message").focus();
 			}
 		};
-		socket.emit("setname",name,nameCallback);
+		socket.emit("setname",$("#username").val(),nameCallback);
+		return false;
 	});
 
 	$("#chat").on("submit",function(){
@@ -56,17 +63,16 @@ $(document).on("ready",function(){
 });
 </script>
 </head>
-<body>
-<div id="name-inputs">
-	<input id="username" type="text" />
-	<input id="set-name-button" type="button" value="set name" />
-</div>
-
-<ul id="users"></ul>
-<form id="chat">
-	<div id="messages"></div>
-	<input id="message" type="text" />
-	<input id="send-message-button" type="submit" value="send" />
-</form>
+<body class="container_12">
+	<form id="name-inputs">
+		<input id="username" type="text" />		
+	</form>			
+	<form id="chat" class="grid_12 alpha omega">	
+		<div id="messages" class="grid_10 alpha ui-widget-content ui-corner-all"></div>
+		<div class="grid_2 omega">		
+			<ul id="users" class="ui-widget-content ui-corner-all"></ul>		
+		</div>	
+		<input id="message" type="text" class="grid_12 alpha omega ui-widget ui-corner-all"/>			
+	</form>
 </body>
 </html>

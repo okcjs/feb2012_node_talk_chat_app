@@ -18,14 +18,12 @@ io.sockets.on("connection", function(socket){
 	socket.on("setname",function(name,fn){
 		if(users[name]){
 			fn(true);
-		}
-		else{
-			fn(false)
+		} else {
+			fn(false);
 			users[name] = socket.name = name;
 			socket.broadcast.emit("announcement", name + " connected.");
 			io.sockets.emit("users",users);
 		}
-
 		socket.emit("nameset",name);
 	});
 

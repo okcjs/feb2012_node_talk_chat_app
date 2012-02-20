@@ -1,0 +1,15 @@
+div,input,ul {margin: 0px; padding: 0px;}
+
+/*display*/
+#messages {height: 95%; overflow: auto;}
+#users {height: 95%; list-style: none; overflow: auto;}
+#users li {padding: 0px 0px 0px 5px;}
+
+/*message types*/
+.announcement { font-weight: bold; }
+.message { padding: 0px 0px 0px 5px; margin: 0px 0px 0px 0px;}
+
+/*input*/
+#username {width: 100%; }
+#message { line-height: 2em;}
+
