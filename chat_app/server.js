@@ -4,9 +4,6 @@ var sio = require("socket.io");
 var staticPort = 8000;
 var sioPort = 1337;
 
-staticPort = 15215;
-sioPort = 15216;
-
 //the connect module acts as a factory function that takes middleware arguments
 connect(
 	connect.static(__dirname + "/public")
