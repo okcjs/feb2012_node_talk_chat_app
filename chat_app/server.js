@@ -1,8 +1,31 @@
+//Contents
+// Contents
+// modules
+// configuration
+// servers
+//  connect
+//  socket.io
+// users
+//  setUser
+//  getUser
+//  delUser
+// socket handlers
+//  setname
+//  getUsers
+//  message
+//  disconnect
+//  connect
+
+
+//modules
 var connect = require("connect");
 var sio = require("socket.io");
 
+//configuration
 var staticPort = 8000;
 var sioPort = 1337;
+
+//servers
 
 //the connect module acts as a factory function that takes middleware arguments
 connect(
@@ -14,13 +37,13 @@ connect(
 	}
 );
 
-
 var io = sio.listen(
 	sioPort,
 	function(){
 		console.log("socket server listening on port " + sioPort);
 	}
 );
+
 
 var users = {};
 function setUser(name){
@@ -39,7 +62,7 @@ function delUser(name){
 }
 
 
-
+//socket handlers
 function handleSetname(name,fn){
 	if(getUser(name)){
 		fn(true);
@@ -71,4 +94,5 @@ function handleSocketConnect(socket){
 	socket.on("message", handleMessage);
 	socket.on("disconnect", handleDisconnect);
 }
+
 io.sockets.on("connection", handleSocketConnect);
