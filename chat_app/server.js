@@ -1,19 +1,34 @@
 var connect = require("connect");
 var sio = require("socket.io");
 
-connect(connect.static(__dirname + "/public")).listen(8000, function(){
-	console.log("static server listening on port 8000");
-});
+var staticPort = 8000;
+var sioPort = 1337;
+
+staticPort = 15215;
+sioPort = 15216;
+
+//the connect module acts as a factory function that takes middleware arguments
+connect(
+	connect.static(__dirname + "/public")
+).listen(
+	staticPort,
+	function(){
+		console.log("static server listening on port " + staticPort);
+	}
+);
 
 
-var io = sio.listen(1337,function(){
-	console.log("socket server listening on port 1337");
-});
+var io = sio.listen(
+	sioPort,
+	function(){
+		console.log("socket server listening on port " + sioPort);
+	}
+);
 
 var users = {};
 
 
-io.sockets.on("connection", function(socket){
+io.sockets.on("connection", function handleSocketConnect(socket){
 
 	socket.on("setname",function(name,fn){
 		if(users[name]){
@@ -21,14 +36,14 @@ io.sockets.on("connection", function(socket){
 		} else {
 			fn(false);
 			users[name] = socket.name = name;
-			socket.broadcast.emit("announcement", name + " connected.");
+			this.broadcast.emit("announcement", name + " connected.");
 			io.sockets.emit("users",users);
 		}
-		socket.emit("nameset",name);
+		this.emit("nameset",name);
 	});
 
 	socket.on("getUsers",function(){
-		socket.emit("users",users);
+		this.emit("users",users);
 	});
 	
 	socket.on("message",function(message){
@@ -36,11 +51,11 @@ io.sockets.on("connection", function(socket){
 	});
 
 	socket.on("disconnect",function(){
-		if(socket.name && users[socket.name])
+		if(this.name && users[this.name])
 		{
-			delete users[socket.name];
+			delete users[this.name];
 		}
-		socket.broadcast.emit("announcement", socket.name + " disconnected.");	
+		this.broadcast.emit("announcement", this.name + " disconnected.");	
 		io.sockets.emit("users",users);
 	});
 });
