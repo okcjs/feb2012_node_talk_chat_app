@@ -23,14 +23,29 @@ var io = sio.listen(
 );
 
 var users = {};
+function setUser(name){
+	var result = getUser(name);
+	users[name] = name;
+	return result;//returns the old value
+}
+function getUser(name){
+	return users[name];
+}
+function delUser(name){
+	var result = getUser(name);
+	if(name in users)
+		delete users[name];
+	return result;//returns the old value
+}
+
 
 
 function handleSetname(name,fn){
-	if(users[name]){
+	if(getUser(name)){
 		fn(true);
 	} else {
 		fn(false);
-		users[name] = socket.name = name;
+		setUser(socket.name = name);
 		this.broadcast.emit("announcement", name + " connected.");
 		io.sockets.emit("users",users);
 	}
@@ -43,9 +58,9 @@ function handleMessage(message){
 	io.sockets.emit("message", socket.name + ": " + message);
 }
 function handleDisconnect(){
-	if(this.name && users[this.name])
+	if(this.name)
 	{
-		delete users[this.name];
+		delUser(this.name);
 	}
 	this.broadcast.emit("announcement", this.name + " disconnected.");
 	io.sockets.emit("users",users);
