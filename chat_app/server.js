@@ -90,17 +90,13 @@ function handleDisconnect(){
 }
 function handleSocketConnect(socket){
 	return new MySocket(socket);
-	socket.on("setname", handleSetname);
-	socket.on("getUsers", handleGetUsers);
-	socket.on("message", handleMessage);
-	socket.on("disconnect", handleDisconnect);
 }
 
 //our sockets as a class
 function MySocket(socket){
 	this.socket = socket;
 	for(var k in this.callbacks)
-		this.socket.on(k, this.calbacks[k]);
+		this.socket.on(k, this[k]);
 }
 MySocket.prototype.callbacks = {
 	setname: handleSetname,
@@ -108,6 +104,10 @@ MySocket.prototype.callbacks = {
 	message: handleMessage,
 	disconnect: handleDisconnect
 };
+MySocket.prototype.setname = handleSetname;
+MySocket.prototype.getUsers = handleGetUsers;
+MySocket.prototype.message = handleMessage;
+MySocket.prototype.disconnect = handleDisconnect;
 
 
 io.sockets.on("connection", handleSocketConnect);
