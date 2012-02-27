@@ -9,12 +9,13 @@
 //  setUser
 //  getUser
 //  delUser
-// socket handlers
+// MySocket
 //  setname
 //  getUsers
 //  message
 //  disconnect
-//  connect
+// socket connection listener
+
 
 
 //modules
@@ -62,8 +63,19 @@ function delUser(name){
 }
 
 
-//socket handlers
-function handleSetname(name,fn){
+//a class for our sockets
+function MySocket(socket){
+	this.socket = socket;
+	for(var k in this.callbacks)
+		this.socket.on(k, this[k]);
+}
+MySocket.prototype.callbacks = {
+	setname: 1,
+	getUsers: 1,
+	message: 1,
+	disconnect: 1
+};
+MySocket.prototype.setname = function setname(name,fn){
 	if(getUser(name)){
 		fn(true);
 	} else {
@@ -74,13 +86,13 @@ function handleSetname(name,fn){
 	}
 	this.emit("nameset",name);
 }
-function handleGetUsers(){
+MySocket.prototype.getUsers = function getUsers(){
 	this.emit("users", users);
 }
-function handleMessage(message){
+MySocket.prototype.message = function message(message){
 	io.sockets.emit("message", socket.name + ": " + message);
 }
-function handleDisconnect(){
+MySocket.prototype.disconnect = function disconnect(){
 	if(this.name)
 	{
 		delUser(this.name);
@@ -88,26 +100,11 @@ function handleDisconnect(){
 	this.broadcast.emit("announcement", this.name + " disconnected.");
 	io.sockets.emit("users",users);
 }
-function handleSocketConnect(socket){
-	return new MySocket(socket);
-}
-
-//our sockets as a class
-function MySocket(socket){
-	this.socket = socket;
-	for(var k in this.callbacks)
-		this.socket.on(k, this[k]);
-}
-MySocket.prototype.callbacks = {
-	setname: handleSetname,
-	getUsers: handleGetUsers,
-	message: handleMessage,
-	disconnect: handleDisconnect
-};
-MySocket.prototype.setname = handleSetname;
-MySocket.prototype.getUsers = handleGetUsers;
-MySocket.prototype.message = handleMessage;
-MySocket.prototype.disconnect = handleDisconnect;
 
 
-io.sockets.on("connection", handleSocketConnect);
+io.sockets.on(
+	"connection",
+	function connection(socket){
+		return new MySocket(socket);
+	}
+);
