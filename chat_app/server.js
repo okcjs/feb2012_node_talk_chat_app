@@ -80,22 +80,22 @@ MySocket.prototype.events = [
 MySocket.prototype.listenOn = function listenOn(name){
 	this.socket.on(name, this[name]);
 }
-MySocket.prototype.setname = function setname(name,fn){
+MySocket.prototype.setname = function setname(name, fn){
 	if(getUser(name)){
 		fn(true);
 	} else {
 		fn(false);
 		setUser(socket.name = name);
 		this.broadcast.emit("announcement", name + " connected.");
-		io.sockets.emit("users",users);
+		io.sockets.emit("users", users);
 	}
-	this.emit("nameset",name);
+	this.emit("nameset", name);
 }
 MySocket.prototype.getUsers = function getUsers(){
 	this.emit("users", users);
 }
 MySocket.prototype.message = function message(message){
-	io.sockets.emit("message", socket.name + ": " + message);
+	io.sockets.emit("message", this.name + ": " + message);
 }
 MySocket.prototype.disconnect = function disconnect(){
 	if(this.name)
