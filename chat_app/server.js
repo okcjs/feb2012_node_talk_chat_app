@@ -10,6 +10,8 @@
 //  getUser
 //  delUser
 // MySocket
+//  events
+//  listener
 //  setname
 //  getUsers
 //  message
@@ -66,15 +68,18 @@ function delUser(name){
 //a class for our sockets
 function MySocket(socket){
 	this.socket = socket;
-	for(var k in this.callbacks)
-		this.socket.on(k, this[k]);
+	for(var i = 0; i < this.events.length; i++)
+		this.listenOn(this.events[i]);
 }
-MySocket.prototype.callbacks = {
-	setname: 1,
-	getUsers: 1,
-	message: 1,
-	disconnect: 1
-};
+MySocket.prototype.events = [
+	"setname",
+	"getUsers",
+	"message",
+	"disconnect"
+];
+MySocket.prototype.listenOn = function listenOn(name){
+	this.socket.on(name, this[name]);
+}
 MySocket.prototype.setname = function setname(name,fn){
 	if(getUser(name)){
 		fn(true);
