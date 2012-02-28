@@ -5,6 +5,7 @@
 // servers
 //  connect
 //  socket.io
+// PrivateCell
 // users
 //  setUser
 //  getUser
@@ -49,35 +50,35 @@ var io = sio.listen(
 
 
 function PrivateCell(val){
- var value = {val: val};
- function set(val){
-  var result = get();
-  value.val = val;
-  return result;
- }
- function get(){
-  return value.val;
- }
- function getKey(key){
-  return get()[key];
- }
- function setKey(key, val){
-  var result = getKey(key);
-  get()[key] = val;
-  return result;
- }
- function delKey(key){
-  var result = getKey(key);
-  var got = get();
-  if(key in got)
-   delete got[key];
-  return result;
- }
- this.set = set;
- this.get = get;
- this.getKey = getKey;
- this.setKey = setKey;
- this.delKey = delKey;
+	var value = {val: val};
+	function get(){
+		return value.val;
+	}
+	function getKey(key){
+		return get()[key];
+	}
+	function set(val){
+		var result = get();
+		value.val = val;
+		return result;
+	}
+	function setKey(key, val){
+		var result = getKey(key);
+		get()[key] = val;
+		return result;
+	}
+	function delKey(key){
+		var result = getKey(key);
+		var got = get();
+		if(key in got)
+			delete got[key];
+		return result;
+	}
+	this.set = set;
+	this.get = get;
+	this.getKey = getKey;
+	this.setKey = setKey;
+	this.delKey = delKey;
 }
 var users = new PrivateCell({});
 var setUser = users.setKey;
