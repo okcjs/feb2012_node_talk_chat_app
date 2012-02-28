@@ -50,28 +50,34 @@ var io = sio.listen(
 
 function PrivateCell(val){
  var value = {val: val};
- this.set = function set(val){
-  var result = value.val;
+ function set(val){
+  var result = get();
   value.val = val;
   return result;
- };
- this.get = function get(){
+ }
+ function get(){
   return value.val;
- };
- this.getKey = function getKey(key){
-  return value.val[key];
- };
- this.setKey = function setKey(key, val){
-  var result = value.val[key];
-  value.val[key] = val;
+ }
+ function getKey(key){
+  return get()[key];
+ }
+ function setKey(key, val){
+  var result = getKey(key);
+  get()[key] = val;
   return result;
  }
- this.delKey = function delKey(key){
-  var result = value.val[key];
-  if(key in value.val)
-   delete value.val[key];
+ function delKey(key){
+  var result = getKey(key);
+  var got = get();
+  if(key in got)
+   delete got[key];
   return result;
  }
+ this.set = set;
+ this.get = get;
+ this.getKey = getKey;
+ this.setKey = setKey;
+ this.delKey = delKey;
 }
 var users = new PrivateCell({});
 var setUser = users.setKey;
