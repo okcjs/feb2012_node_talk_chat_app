@@ -74,23 +74,6 @@ function PrivateCell(val){
  }
 }
 var users = new PrivateCell({});
-//var users = {};
-/*
-function setUser(name){
-	var result = getUser(name);
-	users[name] = name;
-	return result;//returns the old value
-}
-function getUser(name){
-	return users[name];
-}
-function delUser(name){
-	var result = getUser(name);
-	if(name in users)
-		delete users[name];
-	return result;//returns the old value
-}
-*/
 var setUser = users.setKey;
 var getUser = users.getKey;
 var delUser = users.delKey;
