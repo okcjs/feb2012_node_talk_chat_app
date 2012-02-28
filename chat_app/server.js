@@ -81,7 +81,7 @@ function PrivateCell(val){
 	this.delKey = delKey;
 }
 var users = new PrivateCell({});
-var setUser = users.setKey;
+var setUser = function(name){return users.setKey(name, name)};
 var getUser = users.getKey;
 var delUser = users.delKey;
 delete users.set;
