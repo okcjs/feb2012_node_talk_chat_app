@@ -11,8 +11,8 @@
 
 <script type="text/javascript" src="http://okcjs.ideasrun.com:1337/socket.io/socket.io.js"></script>
 <script type="text/javascript">
-var socket = io.connect("http://okcjs.ideasrun.com:1337");
-
+var sioPort = 1337;
+var socket = io.connect("http://okcjs.ideasrun.com:" + sioPort);
 $(document).on("ready",function(){
 	//page setup
 	$("#chat").hide(); //hide this till the username is set.
@@ -47,7 +47,7 @@ $(document).on("ready",function(){
 				alert("name is in use");
 			} else {
 				$("#name-inputs").dialog("close");
-				$("#chat").show();				
+				$("#chat").show();
 				$("#users").show();
 				$("#message").focus();
 			}
